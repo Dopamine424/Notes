@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ConvexClientProvider } from "@/components/providers/convex-provider";
-import { Toaster } from "sonner";
+import { ModalProvider } from "@/components/providers/modal-provider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,9 +20,10 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Notes",
-  description: "Приложение для организации информации, которое ускорит вашу работу",
+  description:
+    "Приложение для организации информации, которое ускорит вашу работу",
   icons: {
-    icon:[
+    icon: [
       {
         media: "(prefers-color-scheme: light)",
         url: "/logo.svg",
@@ -31,8 +34,8 @@ export const metadata: Metadata = {
         url: "/logo-dark.svg",
         href: "logo-dark.svg",
       },
-    ]
-  }
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -46,10 +49,19 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ConvexClientProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="notes-theme-2">
-            <Toaster position="bottom-center"/>
-            {children}
-          </ThemeProvider>
+          <EdgeStoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+              storageKey="notes-theme-2"
+            >
+              <Toaster position="bottom-center" />
+              <ModalProvider />
+              {children}
+            </ThemeProvider>
+          </EdgeStoreProvider>
         </ConvexClientProvider>
       </body>
     </html>
